@@ -1,0 +1,228 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    decimal discount = 80;
+}
+@model IEnumerable<Product>
+
+<section>
+    <div class="container my-5">
+        <!-- Filter Section -->
+<div class="container my-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">🔍 Filter Products</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <!-- Search by Name -->
+                <div class="col-md-3">
+                    <label class="form-label">Product Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="Search..." value="@ViewBag.name">
+                </div>
+
+                <!-- Price Range -->
+                <div class="col-md-2">
+                    <label class="form-label">Min Price</label>
+                    <input type="number" name="minPrice" class="form-control" placeholder="Min" value="@ViewBag.minPrice">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Max Price</label>
+                    <input type="number" name="maxPrice" class="form-control" placeholder="Max" value="@ViewBag.maxPrice">
+                </div>
+
+                <!-- Category Filter -->
+                <div class="col-md-2
+                    <label class="form-label">Category</label>
+                    <select name="categoryId" class="form-select">
+                                @* @foreach (var item in ViewData["categories"] as IEnumerable<Category>)
+                                {
+                                           <option value=@item.Id>@item.Name</option>
+                                 } *@
+                                @if (ViewData["categories"] is IEnumerable<Category> categories)
+                                        foreach (var item in categories)
+                                {
+                                        if (item.Id==ViewBag.categoryId)
+                                        {
+                                            
+                                            <option value="@item.Id" selected>@item.Name</option>
+                                        }
+                                        else
+                                        {
+                                             <option value="@item.Id">@item.Name</option>
+
+
+                                        }
+                                    }
+                                    {
+                                                                    
+}
+
+                        
+                    </select>
+                </div>
+
+                <!-- Brand Filter -->
+                <div class="col-md-2">
+                    <label class="form-label">Brand</label>
+                    <select name="brandId" class="form-select">
+                          @foreach (var item in ViewBag.brands)
+                                {
+                                    if (item.Id==ViewBag.brandId)
+                                    {
+                                        
+                                        <option value="@item.Id" selected>@item.Name</option>
+                                    }
+                                    else
+                                    {
+                                        
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                }
+                    </select>
+                </div>
+
+                <!-- Hot Products Checkbox -->
+                <div class="col-md-1">
+                    <div class="form-check mt-4">
+                        <input class="form-check-input" type="checkbox" name="isHot" value="true" id="isHot"  @(ViewBag.isHot != null && ViewBag.isHot ? "checked" : "")>
+                        <label class="form-check-label" for="isHot" >
+                            🔥 Hot
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Filter Buttons -->
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="#" class="btn btn-outline-secondary">Clear Filters</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-lg border-0 rounded-3 overflow-hidden">
+
+                        <!-- صورة المنتج -->
+                        <div class="position-relative">
+                            <img src="~/images/@item.MainImg" class="card-img-top img-fluid" alt="@item.Name" style="height:250px;object-fit:contain; background:#f9f9f9;" />
+                            
+                            @* @if (item.Discount > 0)
+                            {
+                                <span class="position-absolute top-0 end-0 m-2 badge bg-danger">
+                                    -@item.Discount%
+                                </span>
+                            } *@
+                            @if (item.Discount > discount)
+                            {
+                                <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
+                                    🔥 Hot
+                                </span>
+                            }
+                        </div>
+
+                        <!-- بيانات المنتج -->
+                        <div class="card-body text-center">
+                            <h6 class="text-muted mb-1">@item.Category.Name</h6>
+                            <h5 class="card-title fw-bold">@item.Name</h5>
+
+                            <!-- السعر -->
+                            <p class="mb-1 text-muted text-decoration-line-through">@item.price.ToString("c")</p>
+                            <p class="fw-bold text-success fs-5">
+                                @((item.price - (item.price * item.Discount / 100)).ToString("c"))
+                            </p>
+
+                            <!-- تقييم النجوم -->
+                            <div class="mb-3">
+                                @for (int i = 0; i < item.Rate; i++)
+                                {
+                                    <span class="text-warning">★</span>
+                                }
+                                @for (int i = (int)item.Rate; i < 5; i++)
+                                {
+                                    <span class="text-secondary">☆</span>
+                                }
+                            </div>
+
+                            <!-- الأزرار -->
+                            <div class="d-grid gap-2">
+                                <a href="#" class="btn btn-primary">🛒 إضافة للسلة</a>
+                                <a href="#" class="btn btn-outline-secondary">📄 تفاصيل</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <!-- Pagination Section -->
+@if (ViewBag.totalPage > 1)
+{
+    <div class="container mt-5">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Button -->
+                <li class="page-item @(ViewBag.currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" 
+                       href="@Url.Action("Index", new { 
+                           page = ViewBag.currentPage - 1,
+                           name = ViewBag.name,
+                           minPrice = ViewBag.minPrice,
+                           maxPrice = ViewBag.maxPrice,
+                           categoryId = ViewBag.categoryId,
+                           brandId = ViewBag.brandId,
+                           isHot = ViewBag.isHot
+                       })" 
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- Page Numbers -->
+                @for (int i = 1; i <= ViewBag.totalPage; i++)
+                {
+                    <li class="page-item @(i == ViewBag.currentPage ? "active" : "")">
+                        <a class="page-link" 
+                           href="@Url.Action("Index", new { 
+                               page = i,
+                               name = ViewBag.name,
+                               minPrice = ViewBag.minPrice,
+                               maxPrice = ViewBag.maxPrice,
+                               categoryId = ViewBag.categoryId,
+                               brandId = ViewBag.brandId,
+                               isHot = ViewBag.isHot
+                           })">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                <!-- Next Button -->
+                <li class="page-item @(ViewBag.currentPage == ViewBag.totalPage ? "disabled" : "")">
+                    <a class="page-link" 
+                       href="@Url.Action("Index", new { 
+                           page = ViewBag.currentPage + 1,
+                           name = ViewBag.name,
+                           minPrice = ViewBag.minPrice,
+                           maxPrice = ViewBag.maxPrice,
+                           categoryId = ViewBag.categoryId,
+                           brandId = ViewBag.brandId,
+                           isHot = ViewBag.isHot
+                       })" 
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Page Info -->
+        <div class="text-center text-muted mt-2">
+            Page @ViewBag.currentPage of @ViewBag.totalPage - Showing @Model.Count() products
+        </div>
+    </div>
+}
+</section>
