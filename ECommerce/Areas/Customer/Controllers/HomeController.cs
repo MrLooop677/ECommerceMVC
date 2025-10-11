@@ -4,8 +4,10 @@ using ECommerce.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ECommerce.Controllers
+namespace ECommerce.Areas.Customer.Controllers
 {
+    [Area("Customer")]
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -16,7 +18,7 @@ namespace ECommerce.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index(FilterProductVM filterProductVM,int page)
+        public IActionResult Index(FilterProductVM filterProductVM,int page=1)
         {
             decimal discount = 80;
 
@@ -31,12 +33,12 @@ namespace ECommerce.Controllers
 
             if (filterProductVM.minPrice is not null)
             {
-                products = products.Where(p => p.price - (p.price * p.Discount / 100) > filterProductVM.minPrice);
+                products = products.Where(p => p.price - p.price * p.Discount / 100 > filterProductVM.minPrice);
                 ViewBag.minPrice = filterProductVM.minPrice;
             }
             if (filterProductVM.minPrice is not null)
             {
-                products = products.Where(p => p.price - (p.price * p.Discount / 100) < filterProductVM.maxPrice);
+                products = products.Where(p => p.price - p.price * p.Discount / 100 < filterProductVM.maxPrice);
                 ViewBag.maxPrice = filterProductVM.maxPrice;
             }
             if (filterProductVM.categoryId is not null) {
