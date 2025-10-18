@@ -1,0 +1,74 @@
+﻿<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Create New Brand</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+
+                        <div class="mb-3">
+                            <label for="Name" class="form-label">Brand Name</label>
+                            <input type="text"
+                                class="form-control"
+                                name="Name"
+                                placeholder="Enter Brand name"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="MainImg" class="form-label">Img</label>
+                            <input
+                                class="form-control"
+                                type="file"
+                                name="MainImg" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="MainImg" class="form-label">Sub Imgs</label>
+                            <input
+                                class="form-control"
+                                type="file"
+                                name="subImgs" multiple/>
+                            
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Description" class="form-label">Description</label>
+                            <textarea class="form-control"
+                                name="Description"
+                                rows="3"
+                                placeholder="Enter a brief description"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="BrandStatus" class="form-label">Status</label>
+                            <select class="form-select"
+                                id="Status"
+                                name="Status"
+                                aria-label="Brand Status"
+                                required>
+                                <option value="" disabled selected>Select the status</option>
+                                <option value="True">Active</option>
+                                <option value="False">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2 pt-2">
+                            <button type="submit" class="btn btn-success">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-plus-circle-fill me-2" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+                                </svg>
+                                Create Brand
+                            </button>
+                        </div>
+
+                        <div class="mt-3 text-center">
+                            <a href="/Brand" class="btn btn-outline-secondary btn-sm">Back to Brand List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

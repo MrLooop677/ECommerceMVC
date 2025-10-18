@@ -4,20 +4,14 @@ using Microsoft.EntityFrameworkCore;
 namespace ECommerce.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class BrandController : Controller
+    public class ProductController : Controller
     {
         ApplicationDbContext _db = new();
         public IActionResult Index()
         {
-            var brands = _db.Brands.AsNoTracking().AsQueryable();
-            return View(brands.Select(e => new
-            {
-                e.Id,
-                e.Name,
-                e.Description,
-                e.Status,
-                e.Img
-            }).AsEnumerable());
+            var products = _db.Products.AsNoTracking().AsQueryable();
+            products = products.Include((e) => e.Brand).Include((e) => e.Category);
+            return View(products.AsAsyncEnumerable());
         }
         [HttpGet]
         public IActionResult Create()
@@ -26,7 +20,7 @@ namespace ECommerce.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Brand brand, IFormFile img)
+        public IActionResult Create(Product product, IFormFile img, List<IFormFile> subImgs)
         {
             if (img is not null && img.Length > 0)
             {
@@ -39,38 +33,59 @@ namespace ECommerce.Areas.Admin.Controllers
                     // save img in db
                     img.CopyTo(stream);
                 }
-                brand.Img = fileName;
+                product.MainImg = fileName;
             }
             else
             {
 
                 // If no image provided, set a default image
-                brand.Img = "default-brand.png";
+                product.MainImg = "default-product.png";
             }
-            // save brand in db
-            _db.Brands.Add(brand);
+            // save product in db
+            _db.Products.Add(product);
             _db.SaveChanges();
+            if (subImgs is not null && subImgs.Count > 0)
+            {
+                foreach (var item in subImgs)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(item.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        // save img in db
+                        item.CopyTo(stream);
+                    }
+                    _db.ProductSubImages.Add(new()
+                    {
+                        Product = product,
+                        SubImg = fileName,
+                        ProductId = product.Id,
+
+                    });
+                }
+                _db.SaveChanges();
+            }
             //send cookies to front end
-            //Response.Cookies.Append("Notification", "add brand succefully");
+            //Response.Cookies.Append("Notification", "add product succefully");
             //tempdData to send temp data when make refresh is deleted
-            TempData["Notification"] = "add brand succefully";
+            TempData["Notification"] = "add product succefully";
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var brand = _db.Brands.FirstOrDefault((e) => e.Id == id);
-            if (brand is null)
+            var product = _db.Products.FirstOrDefault((e) => e.Id == id);
+            if (product is null)
             {
                 return RedirectToAction("NotFound", "Home");
             }
-            return View(brand);
+            return View(product);
         }
         [HttpPost]
-        public IActionResult Edit(Brand brand, IFormFile? img)
+        public IActionResult Edit(Product product, IFormFile? img)
         {
-            var brandInDb = _db.Brands.FirstOrDefault(e => e.Id == brand.Id);
-            if (brandInDb is null)
+            var productInDb = _db.Products.FirstOrDefault(e => e.Id == product.Id);
+            if (productInDb is null)
             {
                 return RedirectToAction("NotFound", "Home");
             }
@@ -89,18 +104,18 @@ namespace ECommerce.Areas.Admin.Controllers
                 }
 
                 //Remove old img from folder
-                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", brandInDb.Img);
+                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", productInDb.MainImg);
                 if (System.IO.File.Exists(oldPath))
                 {
                     System.IO.File.Delete(oldPath);
                 }
-                brandInDb.Img = fileName;
+                productInDb.MainImg = fileName;
             }
             // If no new image uploaded, keep the old image (no action needed)
 
-            brandInDb.Name = brand.Name;
-            brandInDb.Status = brand.Status;
-            brandInDb.Description = brand.Description;
+            productInDb.Name = product.Name;
+            productInDb.Status = product.Status;
+            productInDb.Description = product.Description;
 
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
@@ -108,12 +123,12 @@ namespace ECommerce.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var brand = _db.Brands.FirstOrDefault((e) => e.Id == id);
-            if (brand is null)
+            var product = _db.Products.FirstOrDefault((e) => e.Id == id);
+            if (product is null)
             {
                 return RedirectToAction("NotFound", "Home");
             }
-            _db.Brands.Remove(brand);
+            _db.Products.Remove(product);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
