@@ -16,5 +16,7 @@
         public Category? Category { get; set; } = null;
         public int BrandId { get; set; }
         public Brand? Brand { get; set; } = null;
+        public List<ProductColor> ProductColors { get; set; }
+        public List<ProductSubImage> ProductSubImages { get; set; } = null!;
     }
 }

@@ -1,129 +1,204 @@
 ﻿@model IEnumerable<Product>
-    @{
-    
-       const int q=7000 ;
-    }
+@{
+    const double quantity = 100;
+}
 
-<div class="card mb-4">
-    <!--<div class="display-5">@Context.Request.Cookies["Notification"]</div> -->
-    <div class="display-5">@TempData["Notification"]</div>
+<!-- Filter Section -->
+<section class="py-3 filter-bar">
+    <div class="container">
+        <div class="row" style="background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;">
+            <div class="col-12">
+                <form>
+                    <div class="row">
+                        <!-- Product Name -->
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" placeholder="Product Name" name="name" value="@ViewBag.name">
+                        </div>
 
-    <div class="card-header">
-        <svg class="svg-inline--fa fa-table me-1" aria-hidden="true" focusable="false" data-prefix="fas"
-            data-icon="table" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-            data-fa-i2svg="">
-            <path fill="currentColor" d="M64 256V160H224v96H64zm0 64H224v96H64V320zm224 96V320H448v96H288zM448 256H288V160H448v96zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z">
-            </path></svg>DataTable Example
-    </div>
-    <div class="card-body">
-        <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns">
-            <div class="datatable-top">
-                <div class="datatable-dropdown">
-                    <label>
-                        <select class="datatable-selector">
-                            <option value="5">5</option>
-                            <option value="10" selected="">10</option>
-                            <option value="15">15</option>
-                            <option value="20">20</option>
-                            <option value="25">25</option>
-                        </select>
-                        entries per page
-                    </label>
-                </div>
-                <div class="datatable-search">
-                    <input class="datatable-input" placeholder="Search..." type="search" title="Search within table"
-                        aria-controls="datatablesSimple">
-                </div>
-                <a class="btn btn-success" href="/Admin/Product/Create">Create</a>
-            </div>
-            <div class="datatable-container">
-                <table id="datatablesSimple" class="datatable-table">
-                    <thead>
-                        <tr>
-                            <th data-sortable="true" style="width: 15%;"><a href="#" class="datatable-sorter">Id</a>
-                            </th>
-                            <th data-sortable="true" style="width: 25%;"><a href="#" class="datatable-sorter">Name</a>
-                            </th>
-                            <th data-sortable="true" style="width: 25%;"><a href="#" class="datatable-sorter">Category Name</a>
-                            </th>
-                            <th data-sortable="true" style="width: 25%;"><a href="#" class="datatable-sorter">Brand Name</a>
-                            </th>
-                            <th data-sortable="true" style="width: 25%;"><a href="#" class="datatable-sorter">Price</a>
-                            </th>
-                            <th data-sortable="true" style="width: 25%;"><a href="#" class="datatable-sorter">Quantity</a>
-                            </th>
-                          
-                            @* <-- ADDED THIS HEADER *@
-                                <th data-sortable="true" style="width: 15%;"><a href="#" class="datatable-sorter">Status</a>
-                                </th>
-                            <th data-sortable="true" style="width: 15%;"><a href="#" class="datatable-sorter">Images</a>
-                            </th>
-                            <th data-sortable="true" style="width: 15%;"><a href="#" class="datatable-sorter">Actions</a>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                            {
-                                <tr data-index="0">
-                                    <td>@item.Id</td>
-                                    <td>@item.Name</td>
-                                    <td>@item.Category.Name</td>
-                                    <td>@item.Brand.Name</td>
-                                    <td>@item.price.ToString("C")</td>
-                                    @if (item.Quantity>q)
+                        <!-- Price Range -->
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" placeholder="Min Price" name="minPrice" value="@ViewBag.minPrice">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control" placeholder="Max Price" name="maxPrice"
+                                   value="@ViewBag.maxPrice">
+                        </div>
+
+                        <!-- Category -->
+                        <div class="col-md-2">
+                            <select name="categoryId" class="form-control">
+                                <option>--Select Category--</option>
+                                @foreach (var item in ViewBag.categories)
+                                {
+                                    if (item.Id == ViewBag.categoryId)
                                     {
-                                        <td><span class="badge text-bg-success">@item.Quantity</span></td>
+                                        <option value="@item.Id" selected>@item.Name</option>
                                     }
                                     else
                                     {
-                                        <td><span class="badge text-bg-danger">@item.Quantity</span></td>
+                                        <option value="@item.Id">@item.Name</option>
                                     }
-                                    @* <-- ADDED THIS DATA CELL *@
-                                    @if (item.Status)
-                                    {
-                                        <td><span class="badge text-bg-success">Active</span></td>
-                                    }
-                                    else
-                                    {
-                                        <td><span class="badge text-bg-danger">InActive</span></td>
-                                    }
-                                     <td><img src="~/images/@item.MainImg" width="30" height="30" /></td>
+                                }
+                            </select>
+                        </div>
 
-                                    <td>
-                                        <a class="btn btn-primary btn-sm" href="/Admin/Brand/Edit/@item.Id">Edit</a>
-                                        @* Simplified href/asp-route *@
-                                        <a class="btn btn-danger btn-sm" href="/Admin/Brand/Delete/@item.Id">Delete</a> 
-                                            
-                                    </td>
-                                </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div class="datatable-bottom">
-                <div class="datatable-info">Showing 1 to 10 of 57 entries</div>
-                <nav class="datatable-pagination">
-                    <ul class="datatable-pagination-list">
-                        <li class="datatable-pagination-list-item datatable-hidden datatable-disabled"><a
-                            data-page="1" class="datatable-pagination-list-item-link">‹</a></li>
-                        <li class="datatable-pagination-list-item datatable-active"><a data-page="1" class="datatable-pagination-list-item-link">
-                            1</a></li>
-                        <li class="datatable-pagination-list-item"><a data-page="2" class="datatable-pagination-list-item-link">
-                            2</a></li>
-                        <li class="datatable-pagination-list-item"><a data-page="3" class="datatable-pagination-list-item-link">
-                            3</a></li>
-                        <li class="datatable-pagination-list-item"><a data-page="4" class="datatable-pagination-list-item-link">
-                            4</a></li>
-                        <li class="datatable-pagination-list-item"><a data-page="5" class="datatable-pagination-list-item-link">
-                            5</a></li>
-                        <li class="datatable-pagination-list-item"><a data-page="6" class="datatable-pagination-list-item-link">
-                            6</a></li>
-                        <li class="datatable-pagination-list-item"><a data-page="2" class="datatable-pagination-list-item-link">
-                            ›</a></li>
-                    </ul>
-                </nav>
+                        <!-- Brand -->
+                        <div class="col-md-2">
+                            <select name="brandId" class="form-control">
+                                <option value="">--Select Brand--</option>
+                                @if (ViewData["brands"] is IEnumerable<Brand> brands)
+                                {
+                                    foreach (var item in brands)
+                                    {
+                                        if (item.Id == ViewBag.brandId)
+                                        {
+                                            <option value="@item.Id" selected>@item.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                                    }
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- LessQuantity Product Checkbox -->
+                        <div class="col-md-1">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="LessQuantity" value="true" @(ViewBag.LessQuantity is not null && ViewBag.LessQuantity ? "checked" : "")>
+                                <label class="form-check-label">Less Quantity</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-dark w-100">Filter</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</section>
+
+<div class="container">
+
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-md-6">
+            <h2 class="display-6">All Products</h2>
+        </div>
+        <div class="col-md-6 text-md-end text-start mt-2 mt-md-0">
+            <a href="/Admin/Product/Create" class="btn btn-success">Create</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Brand Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in Model)
+                    {
+                        <tr>
+                            <th scope="row">@item.Id</th>
+                            <td>@item.Name</td>
+                            <td>@item.Category.Name</td>
+                            <td>@item.Brand.Name</td>
+                            <td>@item.price.ToString("c")</td>
+                            @if (item.Quantity > quantity)
+                            {
+                                <td><span class="badge text-bg-primary">@item.Quantity</span></td>
+                            }
+                            else
+                            {
+                                <td><span class="badge text-bg-danger">@item.Quantity</span></td>
+                            }
+                            @if (item.Status)
+                            {
+                                <td><span class="badge text-bg-success">Active</span></td>
+                            }
+                            else
+                            {
+                                <td><span class="badge text-bg-danger">InActive</span></td>
+                            }
+                            <td>
+                                <a href="/Admin/Product/Edit/@item.Id" type="button" class="btn btn-warning">Edit</a>
+                                <a href="/Admin/Product/Delete/@item.Id" class="btn btn-danger btn-delete">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <nav aria-label="Page navigation example" style="justify-content: center;display: flex;">
+            <ul class="pagination">
+                @if (@ViewBag.CurrentPage > 1)
+                {
+                    <li class="page-item"><a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)">Previous</a></li>
+                }
+                @for (var i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item"><a class="page-link" href="?page=@i">@i</a></li>
+                }
+                @if (@ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <li class="page-item"><a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)">Next</a></li>
+                }
+            </ul>
+        </nav>
+    </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".btn-delete");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault(); // stop normal navigation
+
+                const url = this.getAttribute("href");
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This action cannot be undone!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Your file has been deleted.",
+                            icon: "success"
+                        });
+
+                        // Redirect to delete URL
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+</script>
+    <partial name="_NotificationPartial" />
+

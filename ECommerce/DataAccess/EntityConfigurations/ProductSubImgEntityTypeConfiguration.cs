@@ -8,6 +8,10 @@ namespace ECommerce.DataAccess.EntityConfigurations
         public void Configure(EntityTypeBuilder<ProductSubImage> builder)
         {
             builder.HasKey(ps => new { ps.ProductId, ps.SubImg });
+            builder.HasOne(ps => ps.Product)
+                .WithMany(p => p.ProductSubImages)
+                .HasForeignKey(ps => ps.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

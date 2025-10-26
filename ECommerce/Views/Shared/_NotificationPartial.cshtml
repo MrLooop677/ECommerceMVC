@@ -1,0 +1,12 @@
+﻿@if (@TempData["Notification"] is not null)
+    {
+        <script>
+            toastr.success('@TempData["Notification"]')
+        </script>
+}
+        else if (@TempData["err-Notification"] is not null)
+    {
+        <script>
+            toastr.error('@TempData["err-Notification"]')
+        </script>
+}
