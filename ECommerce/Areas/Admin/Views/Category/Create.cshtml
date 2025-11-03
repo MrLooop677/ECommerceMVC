@@ -1,4 +1,6 @@
-﻿<div class="container mt-5">
+﻿@model Category
+<div class="container mt-5">
+        <div asp-validation-summary="All" class="text-danger"> </div>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg">
@@ -12,17 +14,20 @@
                             <label for="Name" class="form-label">Category Name</label>
                             <input type="text"
                                 class="form-control"
-                                name="Name"
                                 placeholder="Enter category name"
-                                required>
+                               asp-for="Name"
+                                >
+                                <span class="text-danger" asp-validation-for="@Model.Name"></span>
                         </div>
 
                         <div class="mb-3">
                             <label for="Description" class="form-label">Description</label>
                             <textarea class="form-control"
-                                name="Description"
+                                asp-for="Description"
                                 rows="3"
                                 placeholder="Enter a brief description"></textarea>
+                                <span class="text-danger" asp-validation-for="@Model.Description"></span>
+
                         </div>
 
                         <div class="mb-3">
@@ -31,11 +36,21 @@
                                 id="Status"
                                 name="Status"
                                 aria-label="Category Status"
-                                required>
+                                >
                                 <option value="" disabled selected>Select the status</option>
+                                @if (Model.Status)
+                                {
+
                                 <option value="True">Active</option>
+                                }
+                                else
+                                {
+                                    
                                 <option value="False">Inactive</option>
+                                }
                             </select>
+                            <span class="text-danger" asp-validation-for="@Model.Status"></span>
+
                         </div>
 
                         <div class="d-grid gap-2 pt-2">
@@ -57,3 +72,6 @@
         </div>
     </div>
 </div>
+@section Scripts{
+ <partial name="_ValidationScriptsPartial" />
+}

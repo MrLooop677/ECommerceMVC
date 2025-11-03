@@ -18,6 +18,8 @@
                                 placeholder="Enter category name"
                                 value="@Model.Name"
                                 required>
+                                                                <span class="text-danger" asp-validation-for="@Model.Name"></span>
+
                         </div>
 
                         <div class="mb-3">
@@ -26,6 +28,7 @@
                                 name="Description"
                                 rows="3"
                                 placeholder="Enter a brief description">@Model.Description</textarea>
+                                                                <span class="text-danger" asp-validation-for="@Model.Description"></span>
                         </div>
 
                         <div class="mb-3">

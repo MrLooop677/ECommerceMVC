@@ -16,11 +16,16 @@ namespace ECommerce.Areas.Admin.Controllers
         public IActionResult Create()
         {
 
-            return View();
+            return View(new Category { });
         }
         [HttpPost]
         public IActionResult Create(Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError(string.Empty, "Additional error.");
+                return View(category);
+            }
             _db.Categories.Add(category);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
@@ -38,6 +43,10 @@ namespace ECommerce.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Edit(Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(category);
+            }
             _db.Categories.Update(category);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
