@@ -1,19 +1,18 @@
 ﻿using ECommerce.Validation;
 using System.ComponentModel.DataAnnotations;
 
-namespace ECommerce.Models
+namespace ECommerce.ViewModels
 {
-    public class Category
+    public class CreateBrandRequest
     {
-        public int Id { get; set; }
         [Required(ErrorMessage = "هذا الحقل مطلوب")]
 
         [CustomLengthAttribute(3, max: 100, ErrorMessage = "الاسم يجب أن يكون بين 3 و 100 حرف")]
         public string Name { get; set; } = string.Empty;
         [MaxLength(10)]
+
         public string? Description { get; set; }
         public bool Status { get; set; }
-        //public List<Product> Products { get; set; } = new List<Product>();
-
+        public IFormFile Img { get; set; } = default!;
     }
 }

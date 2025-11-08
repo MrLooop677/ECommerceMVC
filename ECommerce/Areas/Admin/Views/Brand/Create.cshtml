@@ -1,4 +1,7 @@
-﻿<div class="container mt-5">
+﻿@using ECommerce.ViewModels
+@model CreateBrandRequest
+
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg">
@@ -12,25 +15,28 @@
                             <label for="Name" class="form-label">Brand Name</label>
                             <input type="text"
                                 class="form-control"
-                                name="Name"
-                                placeholder="Enter Brand name"
-                                required>
+                                asp-for="Name"
+                                placeholder="Enter Brand name"/>
+                                <span class="text-danger" asp-validation-for="Name"></span>
                         </div>
                         <div class="mb-3">
                             <label for="img" class="form-label">Img</label>
                             <input
                                 class="form-control"
                                 type="file"
-                                name="img" />
+                               asp-for="Img" />
+                            <span class="text-danger" asp-validation-for="Img"></span>
 
                         </div>
 
                         <div class="mb-3">
                             <label for="Description" class="form-label">Description</label>
                             <textarea class="form-control"
-                                name="Description"
+                               asp-for="Description"
                                 rows="3"
                                 placeholder="Enter a brief description"></textarea>
+                                 <span class="text-danger" asp-validation-for="Description"></span>
+
                         </div>
 
                         <div class="mb-3">
@@ -39,11 +45,13 @@
                                 id="Status"
                                 name="Status"
                                 aria-label="Brand Status"
-                                required>
+                                >
                                 <option value="" disabled selected>Select the status</option>
                                 <option value="True">Active</option>
                                 <option value="False">Inactive</option>
                             </select>
+                             <span class="text-danger" asp-validation-for="Status"></span>
+
                         </div>
 
                         <div class="d-grid gap-2 pt-2">
@@ -65,3 +73,6 @@
         </div>
     </div>
 </div>
+@section Scripts{
+ <partial name="_ValidationScriptsPartial" />
+}

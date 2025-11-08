@@ -1,4 +1,5 @@
-﻿@model Brand
+﻿@using ECommerce.ViewModels
+@model UpdateBrandRequest
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -16,10 +17,11 @@
                             <input type="text"
                                    class="form-control"
                                    id="Name"
-                                   name="Name"
+                                  
                                    placeholder="Enter Brand name"
-                                   value="@Model?.Name"
-                                   required>
+                                   asp-for="Name"/>
+                                   <span class="text-danger" asp-validation-for="Name"></span>
+
                         </div>
 
                         <!-- Image Upload -->
@@ -28,15 +30,16 @@
                             <input type="file"
                                    class="form-control"
                                    id="img"
-                                   name="img"
+                                  
                                    accept="image/*"
                                    onchange="previewImage(event)"
-                                   value="@Model.Img">
-
+                                   asp-for="NewImg"
+                                   />
+                                   <span class="text-danger" asp-validation-for="Img"></span>
                             <!-- Image Preview -->
                             <div class="text-center mt-3">
                                 <img id="preview"
-                                     src="@(string.IsNullOrEmpty(Model?.Img) ? "" : Url.Content("~/images/" + Model.Img))"
+                                     src="@(string.IsNullOrEmpty(Model.Img) ? "" : Url.Content("~/images/" + Model.Img))"
                                      alt="Image Preview"
                                      style="max-width: 200px; display:@(string.IsNullOrEmpty(Model?.Img) ? "none" : "block"); border-radius:8px;" />
                             </div>
@@ -47,9 +50,10 @@
                             <label for="Description" class="form-label">Description</label>
                             <textarea class="form-control"
                                       id="Description"
-                                      name="Description"
+                                     asp-for="Description"
                                       rows="3"
                                       placeholder="Enter a brief description">@Model?.Description</textarea>
+                                      <span class="text-danger" asp-validation-for="Description"></span>
                         </div>
 
                         <!-- Status -->
@@ -120,3 +124,6 @@
         }
     </script>
 
+                @section Scripts{
+ <partial name="_ValidationScriptsPartial" />
+}
