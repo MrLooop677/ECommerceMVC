@@ -5,7 +5,7 @@ namespace ECommerce.Areas.Admin.Controllers
     [Area("Admin")]
     public class CategoryController : Controller
     {
-        CategoryRepository _categoryRepository = new();
+        Repository<Category> _categoryRepository = new();
 
         //ApplicationDbContext _db = new();
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
