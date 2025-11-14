@@ -5,7 +5,12 @@ namespace ECommerce.Areas.Admin.Controllers
     [Area("Admin")]
     public class CategoryController : Controller
     {
-        Repository<Category> _categoryRepository = new();
+        //Repository<Category> _categoryRepository = new();
+        private readonly IRepository<Category> _categoryRepository;
+        public CategoryController(IRepository<Category> categoryRepository)
+        {
+            _categoryRepository = categoryRepository;
+        }
 
         //ApplicationDbContext _db = new();
         public async Task<IActionResult> Index(CancellationToken cancellationToken)

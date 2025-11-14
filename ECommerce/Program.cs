@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace ECommerce
 {
     public class Program
@@ -6,8 +8,23 @@ namespace ECommerce
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            var connectionString =
+           builder.Configuration.GetConnectionString("DefaultConnection")
+              ?? throw new InvalidOperationException("Connection string"
+              + "'DefaultConnection' not found.");
+
+            //3 ways to get connection string from appsettings.json
+            //builder.Services.AddDbContext<ApplicationDbContext>(option =>
+            //{
+            //    option.UseSqlServer(builder.Configuration.GetSection("ConnectionsStrings")["DefaultConnection"]);
+            //});
+            //builder.Services.AddDbContext<ApplicationDbContext>(option =>
+            //{
+            //    option.UseSqlServer(builder.Configuration["ConnectionsStrings:DefaultConnection"]);
+            //});
             builder.Services.AddControllersWithViews();
+
+            builder.Services.RegisterConfig(connectionString);
 
             var app = builder.Build();
 

@@ -3,14 +3,18 @@ using System.Linq.Expressions;
 
 namespace ECommerce.Repositorioes
 {
-    public class Repository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
-        private ApplicationDbContext _context = new();
+        private ApplicationDbContext _context;//= new();
         private DbSet<T> _db;
-        public Repository()
+
+
+        public Repository(ApplicationDbContext context)
         {
+            _context = context;
             _db = _context.Set<T>();
         }
+
         public async Task AddAsync(T entity, CancellationToken cancellation = default)
         {
             await _db.AddAsync(entity, cancellation);

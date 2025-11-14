@@ -8,7 +8,14 @@ namespace ECommerce.Areas.Admin.Controllers
     public class BrandController : Controller
     {
         //ApplicationDbContext _brandRepository = new ApplicationDbContext();
-        Repository<Brand> _brandRepository = new();
+        //Repository<Brand> _brandRepository = new();
+        private readonly IRepository<Brand> _brandRepository;
+
+        public BrandController(IRepository<Brand> brandRepository)
+        {
+            _brandRepository = brandRepository;
+        }
+
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             var brands = await _brandRepository.GetAsync(cancellation: cancellationToken, tracked: false);

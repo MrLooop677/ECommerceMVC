@@ -6,13 +6,24 @@ namespace ECommerce.Areas.Admin.Controllers
     [Area("Admin")]
     public class ProductController : Controller
     {
-        ApplicationDbContext _db = new ApplicationDbContext();
-        ProductRepository productRepository = new ProductRepository();
-        Repository<Category> categoryRepository = new Repository<Category>();
-        Repository<Brand> brandRepository = new Repository<Brand>();
-        Repository<ProductSubImage> productSubImage = new Repository<ProductSubImage>();
-        //Repository<ProductColor> productColor = new Repository<ProductColor>();
-        ProductColorRepository productColor = new ProductColorRepository();
+        private readonly ApplicationDbContext _db;
+        private readonly IProductRepository productRepository; // = new ProductRepository();
+        private readonly IRepository<Category> categoryRepository; // = new Repository<Category>();
+        private readonly IRepository<Brand> brandRepository;// = new Repository<Brand>();
+        private readonly IRepository<ProductSubImage> productSubImage;// = new Repository<ProductSubImage>();
+        private readonly IProductColorRepository productColor;// = new ProductColorRepository();
+
+        public ProductController(ApplicationDbContext db, IProductRepository productRepository, IRepository<Category> categoryRepository, IRepository<Brand> brandRepository, IRepository<ProductSubImage> productSubImage, IProductColorRepository productColor)
+        {
+            _db = db;
+            this.productRepository = productRepository;
+            this.categoryRepository = categoryRepository;
+            this.brandRepository = brandRepository;
+            this.productSubImage = productSubImage;
+            this.productColor = productColor;
+        }
+
+        //private readonly //Repository<ProductColor> productColor = new Repository<ProductColor>();
 
 
         public async Task<IActionResult> Index(FilterProductVM filterProductVM, CancellationToken cancellationToken, int page = 1, int discount = 0)
@@ -236,7 +247,7 @@ namespace ECommerce.Areas.Admin.Controllers
             productInDb.Status = product.Status;
             productInDb.Description = product.Description;
 
-            productRepository.CommitAsync(cancellation: cancellationToken);
+            await productRepository.CommitAsync(cancellation: cancellationToken);
             if (subImgs is not null && subImgs.Count > 0)
             {
                 foreach (var item in subImgs)
@@ -259,7 +270,7 @@ namespace ECommerce.Areas.Admin.Controllers
                         SubImg = fileName,
                     }, cancellation: cancellationToken);
                 }
-                productSubImage.CommitAsync(cancellation: cancellationToken);
+                await productSubImage.CommitAsync(cancellation: cancellationToken);
             }
             if (colors.Any())
             {

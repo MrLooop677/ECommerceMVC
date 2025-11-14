@@ -1,8 +1,7 @@
-using System.Diagnostics;
-using ECommerce.Models;
 using ECommerce.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace ECommerce.Areas.Customer.Controllers
 {
@@ -11,14 +10,15 @@ namespace ECommerce.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private ApplicationDbContext _db = new();
+        private ApplicationDbContext _db;//= new();
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
+            _db = context;
             _logger = logger;
         }
 
-        public IActionResult Index(FilterProductVM filterProductVM,int page=1)
+        public IActionResult Index(FilterProductVM filterProductVM, int page = 1)
         {
             decimal discount = 80;
 
@@ -26,7 +26,7 @@ namespace ECommerce.Areas.Customer.Controllers
             if (filterProductVM.name is not null)
             {
                 products = products.Where(p => p.Name.Contains(filterProductVM.name));
-                ViewBag.name=filterProductVM.name;
+                ViewBag.name = filterProductVM.name;
 
 
             }
@@ -41,7 +41,8 @@ namespace ECommerce.Areas.Customer.Controllers
                 products = products.Where(p => p.price - p.price * p.Discount / 100 < filterProductVM.maxPrice);
                 ViewBag.maxPrice = filterProductVM.maxPrice;
             }
-            if (filterProductVM.categoryId is not null) {
+            if (filterProductVM.categoryId is not null)
+            {
                 products = products.Where(p => p.CategoryId == filterProductVM.categoryId);
                 ViewBag.categoryId = filterProductVM.categoryId;
 
@@ -51,18 +52,18 @@ namespace ECommerce.Areas.Customer.Controllers
                 products = products.Where(p => p.BrandId == filterProductVM.brandId);
                 ViewBag.brandId = filterProductVM.brandId;
             }
-            if (filterProductVM.isHot )
+            if (filterProductVM.isHot)
             {
-                products = products.Where(p => p.Discount >discount);
+                products = products.Where(p => p.Discount > discount);
                 ViewBag.isHot = filterProductVM.isHot;
             }
             var categories = _db.Categories;
-            ViewData["categories" ]= categories.AsEnumerable();
+            ViewData["categories"] = categories.AsEnumerable();
             var brands = _db.Brands;
             ViewBag.brands = brands.AsEnumerable();
-            ViewBag.totalPage = Math.Ceiling(products.Count()/8.0);
+            ViewBag.totalPage = Math.Ceiling(products.Count() / 8.0);
             ViewBag.currentPage = page;
-            products = products.Skip((page-1)*8).Take(8);
+            products = products.Skip((page - 1) * 8).Take(8);
             return View(products.AsNoTracking().AsEnumerable());
 
         }
@@ -70,11 +71,12 @@ namespace ECommerce.Areas.Customer.Controllers
         {
             return View();
         }
-        public ViewResult  Welcome()
+        public ViewResult Welcome()
         {
             return View();
         }
-        public ViewResult PersonalInfo() { 
+        public ViewResult PersonalInfo()
+        {
             List<string> names = new List<string>()
             {
                 "Alice",
