@@ -1,9 +1,10 @@
 ﻿using ECommerce.DataAccess.EntityConfigurations;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.DataAccess
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -23,11 +24,17 @@ namespace ECommerce.DataAccess
         //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.Property(x => x.Name).IsRequired().HasMaxLength(100);
+                entity.Property(x => x.Description).HasMaxLength(500);
+            });
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductColorEntityTypeConfiguration).Assembly);
             base.OnModelCreating(modelBuilder);
 
 
         }
+        public DbSet<ECommerce.ViewModels.RegisterVM> RegisterVM { get; set; } = default!;
     }
 }
